@@ -16,7 +16,8 @@ from nltk.corpus import brown
 
 
 class PosHMM:
-    def __init__(self):
+    def __init__(self, debug=False):
+        self.debug = debug
         self.word_tag = None
         self.trans = None
     
@@ -164,6 +165,9 @@ class PosHMM:
             #train_data, test_data = brown_corpus[train], brown_corpus[test]
             train_data, test_data = brown_corpus[train], brown_corpus[test]
             self.training(train_data)
+            if not self.debug:
+                continue
+
             all_vals = []
             all_preds = []
             suc = 0
@@ -193,6 +197,9 @@ class PosHMM:
         prec /= 5.0
         recall /= 5.0
         f2_score /= 5.0
+
+        if not self.debug:
+            return None, None
 
         print('Overall scores : ')
         print(f'F1 score - {f1_score}')
@@ -228,14 +235,12 @@ class PosHMM:
         plt.figure(figsize=(8, 6))
         ax = sns.heatmap(confusion_matrix, annot=True, fmt='d', cmap='Blues')
 
-        # Set axis labels and title
         ax.set_xlabel('Predicted Labels')
         ax.set_ylabel('True Labels')
         plt.title('Confusion Matrix Heatmap')
         ax.set_xticklabels(possible_tags)
         ax.set_yticklabels(possible_tags)
 
-        # Show the heatmap
         plt.show()
 
         confusion_matrix = np.array(confusion_matrix, dtype = 'float64')
@@ -249,20 +254,17 @@ class PosHMM:
         plt.figure(figsize=(8, 6))
         ax = sns.heatmap(confusion_matrix, annot=True, cmap='Blues')
 
-        # Set axis labels and title
         ax.set_xlabel('Predicted Labels')
         ax.set_ylabel('True Labels')
         plt.title('Confusion Matrix Heatmap')
         ax.set_xticklabels(possible_tags)
         ax.set_yticklabels(possible_tags)
 
-        # Show the heatmap
         plt.show()
-    
-
 
 
 if __name__=="__main__":
-    pos = PosHMM()
+    pos = PosHMM(debug = True)
     cm, possible_tags = pos.train()
+    print(pos.predict("What are you doing?"))
     pos.plot_matrix(cm, possible_tags)
