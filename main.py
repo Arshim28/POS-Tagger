@@ -13,7 +13,7 @@ import nltk
 nltk.download('brown')
 nltk.download('universal_tagset')
 from nltk.corpus import brown
-
+import re
 
 class PosHMM:
     def __init__(self, debug=False):
@@ -25,11 +25,12 @@ class PosHMM:
         word_tag = {}
         for i in train:
             for j in i:
+                word = re.sub(r'[^a-zA-Z0-9]', '', j[0].lower())
                 if j[1] not in word_tag:
                     word_tag[j[1]] = {}
-                if j[0].lower() not in word_tag[j[1]]:
-                    word_tag[j[1]][j[0].lower()] = 0
-                word_tag[j[1]][j[0].lower()]+=1
+                if word not in word_tag[j[1]]:
+                    word_tag[j[1]][word] = 0
+                word_tag[j[1]][word] += 1
         for x in word_tag:
             tot = 0
             for j in word_tag[x]:
@@ -80,7 +81,8 @@ class PosHMM:
             words = str.split(sentence, ' ')
             sentence = []
             for x in words:
-                sentence.append((x, 0))
+                word = re.sub(r'[^a-zA-Z0-9]', '', x.lower())
+                sentence.append((word, 0))
             n = len(sentence)
         
         curr_tag = [['^', 0]]
