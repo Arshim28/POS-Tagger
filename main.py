@@ -25,7 +25,7 @@ class PosHMM:
         word_tag = {}
         for i in train:
             for j in i:
-                word = re.sub(r'[^a-zA-Z0-9]', '', j[0].lower())
+                word = re.sub(r'[^a-zA-Z0-9\s!?\'-]', '', j[0].lower())
                 if j[1] not in word_tag:
                     word_tag[j[1]] = {}
                 if word not in word_tag[j[1]]:
@@ -81,7 +81,7 @@ class PosHMM:
             words = str.split(sentence, ' ')
             sentence = []
             for x in words:
-                word = re.sub(r'[^a-zA-Z0-9]', '', x.lower())
+                word = re.sub(r'[^a-zA-Z0-9\s!?\'-]', '', x.lower())
                 sentence.append((word, 0))
             n = len(sentence)
         
